@@ -1,6 +1,6 @@
 package com.product.manage.service.mapper;
 
-import com.product.manage.dto.ProductDto;
+import com.product.manage.dto.ProductDTO;
 import com.product.manage.repository.model.InventoryStatus;
 import com.product.manage.repository.model.Product;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ class ProductMapperTest {
     @Test
     void testToEntity() {
         // Arrange
-        ProductDto productDTO = new ProductDto(
+        ProductDTO productDTO = new ProductDTO(
                 null, "P001", "Product 1", "Description 1", "image1.jpg",
                 "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5,
                 LocalDateTime.now(), LocalDateTime.now()
@@ -52,7 +52,7 @@ class ProductMapperTest {
         );
 
         // Act
-        ProductDto productDTO = productMapper.toDTO(product);
+        ProductDTO productDTO = productMapper.toDTO(product);
 
         // Assert
         assertNotNull(productDTO);
@@ -81,7 +81,7 @@ class ProductMapperTest {
                 LocalDateTime.now(), LocalDateTime.now()
         );
 
-        ProductDto productDTO = new ProductDto(
+        ProductDTO productDTO = new ProductDTO(
                 null, "P002", "Updated Product", "Updated Description", "image2.jpg",
                 "Category 2", 200.0, 20, "REF002", 2L, InventoryStatus.LOWSTOCK, 4,
                 null, null

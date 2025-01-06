@@ -2,10 +2,11 @@ package com.product.manage.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.product.manage.dto.ProductDTO;
 import com.product.manage.repository.model.InventoryStatus;
 import com.product.manage.repository.model.Product;
 import com.product.manage.repository.ProductRepository;
-import com.product.manage.dto.ProductDto;
+import com.product.manage.service.impl.ProductServiceImpl;
 import com.product.manage.service.mapper.ProductMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class ProductServiceTest {
     private ProductMapper productMapper;
 
     @InjectMocks
-    private ProductService productService;
+    private ProductServiceImpl productService;
 
     @BeforeEach
     void setUp() {
@@ -41,11 +42,11 @@ class ProductServiceTest {
         Product product1 = new Product(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now());
         Product product2 = new Product(2L, "P002", "Product 2", "Description 2", "image2.jpg", "Category 2", 200.0, 20, "REF002", 2L, InventoryStatus.LOWSTOCK, 4, LocalDateTime.now(), LocalDateTime.now());
         when(productRepository.findAll()).thenReturn(Arrays.asList(product1, product2));
-        when(productMapper.toDTO(product1)).thenReturn(new ProductDto(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
-        when(productMapper.toDTO(product2)).thenReturn(new ProductDto(2L, "P002", "Product 2", "Description 2", "image2.jpg", "Category 2", 200.0, 20, "REF002", 2L, InventoryStatus.LOWSTOCK, 4, LocalDateTime.now(), LocalDateTime.now()));
+        when(productMapper.toDTO(product1)).thenReturn(new ProductDTO(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
+        when(productMapper.toDTO(product2)).thenReturn(new ProductDTO(2L, "P002", "Product 2", "Description 2", "image2.jpg", "Category 2", 200.0, 20, "REF002", 2L, InventoryStatus.LOWSTOCK, 4, LocalDateTime.now(), LocalDateTime.now()));
 
         // Act
-        List<ProductDto> products = productService.getAllProducts();
+        List<ProductDTO> products = productService.getAllProducts();
 
         // Assert
         assertEquals(2, products.size());
@@ -61,10 +62,10 @@ class ProductServiceTest {
         // Arrange
         Product product = new Product(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now());
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
-        when(productMapper.toDTO(product)).thenReturn(new ProductDto(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
+        when(productMapper.toDTO(product)).thenReturn(new ProductDTO(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
 
         // Act
-        Optional<ProductDto> foundProduct = productService.getProductById(1L);
+        Optional<ProductDTO> foundProduct = productService.getProductById(1L);
 
         // Assert
         assertTrue(foundProduct.isPresent());
@@ -79,7 +80,7 @@ class ProductServiceTest {
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act
-        Optional<ProductDto> foundProduct = productService.getProductById(1L);
+        Optional<ProductDTO> foundProduct = productService.getProductById(1L);
 
         // Assert
         assertFalse(foundProduct.isPresent());
@@ -90,15 +91,15 @@ class ProductServiceTest {
     @Test
     void createProduct() {
         // Arrange
-        ProductDto productDto = new ProductDto(null, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, null, null);
+        ProductDTO productDto = new ProductDTO(null, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, null, null);
         Product product = new Product(null, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, null, null);
         Product savedProduct = new Product(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now());
         when(productMapper.toEntity(productDto)).thenReturn(product);
         when(productRepository.save(product)).thenReturn(savedProduct);
-        when(productMapper.toDTO(savedProduct)).thenReturn(new ProductDto(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
+        when(productMapper.toDTO(savedProduct)).thenReturn(new ProductDTO(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now()));
 
         // Act
-        ProductDto createdProduct = productService.createProduct(productDto);
+        ProductDTO createdProduct = productService.createProduct(productDto);
 
         // Assert
         assertNotNull(createdProduct.getId());
@@ -124,14 +125,14 @@ class ProductServiceTest {
     void updateProduct_WhenProductExists() {
         // Arrange
         Product existingProduct = new Product(1L, "P001", "Product 1", "Description 1", "image1.jpg", "Category 1", 100.0, 10, "REF001", 1L, InventoryStatus.INSTOCK, 5, LocalDateTime.now(), LocalDateTime.now());
-        ProductDto updatedDetails = new ProductDto(null, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, null, null);
+        ProductDTO updatedDetails = new ProductDTO(null, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, null, null);
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(existingProduct));
         when(productRepository.save(existingProduct)).thenReturn(existingProduct);
-        when(productMapper.toDTO(existingProduct)).thenReturn(new ProductDto(1L, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, LocalDateTime.now(), LocalDateTime.now()));
+        when(productMapper.toDTO(existingProduct)).thenReturn(new ProductDTO(1L, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, LocalDateTime.now(), LocalDateTime.now()));
 
         // Act
-        ProductDto updatedProduct = productService.updateProduct(1L, updatedDetails);
+        ProductDTO updatedProduct = productService.updateProduct(1L, updatedDetails);
 
         // Assert
         assertNotNull(updatedProduct);
@@ -146,11 +147,11 @@ class ProductServiceTest {
     @Test
     void updateProduct_WhenProductDoesNotExist() {
         // Arrange
-        ProductDto updatedDetails = new ProductDto(null, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, null, null);
+        ProductDTO updatedDetails = new ProductDTO(null, "P001", "Updated Product 1", "Updated Description 1", "image1.jpg", "Category 1", 120.0, 15, "REF001", 1L, InventoryStatus.LOWSTOCK, 4, null, null);
         when(productRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act
-        ProductDto updatedProduct = productService.updateProduct(1L, updatedDetails);
+        ProductDTO updatedProduct = productService.updateProduct(1L, updatedDetails);
 
         // Assert
         assertNull(updatedProduct);
